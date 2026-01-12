@@ -5,3 +5,5 @@ requests
 pandera
 streamlit
 jupyterlab
+pytest
+pytest-cov
