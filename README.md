@@ -22,3 +22,6 @@ python -m venv .venv
 
 # 4. Installer les outils nécessaires
 pip install -r requirements.txt
+
+# 5. Recuperer les CSV
+python src/download_data.py
