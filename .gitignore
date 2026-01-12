@@ -134,6 +134,9 @@ celerybeat.pid
 # SageMath parsed files
 *.sage.py
 
+# data
+/data
+
 # Environments
 .env
 .envrc
@@ -206,6 +209,11 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
+# Coverage reports
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
 # --- SPECIFIQUE PROJET DATA ---
 
 # Ignorer les gros fichiers de données
@@ -224,6 +232,8 @@ __marimo__/
 # Ignorer tout le dossier data…
 data/*
 
+# ... Mais garder les fichiers .gitkeep (pour conserver la structure des dossiers)
+!**/.gitkeep
 # …sauf les échantillons (à versionner)
 !data/sample/
 !data/sample/**
