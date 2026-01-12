@@ -2,7 +2,7 @@ import pytest
 import pandas as pd
 import os
 import tempfile
-from df1_pandera_schema import D1Schema
+from src.df1_pandera_schema import D1Schema
 
 
 class TestDf1:
