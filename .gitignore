@@ -208,23 +208,23 @@ __marimo__/
 
 # --- SPECIFIQUE PROJET DATA ---
 
-# Ignorer tous les fichiers de données volumineux
-*.csv
+# Ignorer les gros fichiers de données
 *.parquet
-*.json
 *.xlsx
 *.xls
 
-# Ignorer les bases de données locales (générées par le script)
+# Ignorer les bases de données locales
 *.db
 *.sqlite
 *.sqlite3
 
-# Ignorer tout le dossier de données (pour être sûr)
-data/
+# Ignorer les CSV (dataset réel souvent lourd)
+*.csv
 
-# Ignorer le dossier de références s'il contient des documents lourds
-references/
+# Ignorer tout le dossier data…
+data/*
 
-# ... Mais garder les fichiers .gitkeep (pour conserver la structure des dossiers)
-!**/.gitkeep
+# …sauf les échantillons (à versionner)
+!data/sample/
+!data/sample/**
+!data/**/.gitkeep

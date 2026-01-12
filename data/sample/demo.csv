@@ -1,0 +1,5 @@
+operation_id,numero_ordre,pavillon,resultat_flotteur,type_flotteur,categorie_flotteur,numero_immatriculation
+-135614,1,FranÃ§ais,"DifficultÃ© surmontÃ©e, reprise de route",PÃªche,PÃªche,
+-135598,1,FranÃ§ais,RemorquÃ©,Plaisance Ã  moteur < 8m,Plaisance,
+-135597,1,Ã‰tranger,AssistÃ©,Navire de charge ou de servitude,Commerce,
+-135596,1,Ã‰tranger,"Non assistÃ©, cas de fausse alerte",Plaisance Ã  voile,Plaisance,
