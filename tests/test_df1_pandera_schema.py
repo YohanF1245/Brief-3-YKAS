@@ -1,7 +1,7 @@
 import pytest
 import pandas as pd
 import pandera.errors
-from df1_pandera_schema import D1Schema
+from src.df1_pandera_schema import D1Schema
 
 
 class TestD1Schema:
