@@ -4,21 +4,6 @@ from pathlib import Path
 from typing import List, Optional
 import pandas as pd
 
-
-def download_csv(url: str, output_path: str) -> bool:
-    try:
-        response = requests.get(url, timeout=30)
-        response.raise_for_status()
-        os.makedirs(os.path.dirname(output_path) if os.path.dirname(output_path) else '.', exist_ok=True)
-        with open(output_path, 'wb') as f:
-            f.write(response.content)
-        print(f"✓ Downloaded: {output_path}")
-        return True
-    except requests.exceptions.RequestException as e:
-        print(f"✗ Error downloading {url}: {e}")
-        return False
-
-
 def download_multiple_csvs(urls: List[str], output_dir: str = "data") -> List[str]:
     os.makedirs(output_dir, exist_ok=True)
     downloaded_files = []
