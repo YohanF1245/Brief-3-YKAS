@@ -208,3 +208,9 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Coverage reports
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
