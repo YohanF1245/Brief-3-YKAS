@@ -15,8 +15,16 @@ def download_multiple_csvs(urls: List[str], output_dir: str = "data") -> List[st
         
         output_path = os.path.join(output_dir, filename)
         
-        if download_csv(url, output_path):
+        try:
+            response = requests.get(url, timeout=30)
+            response.raise_for_status()
+            
+            with open(output_path, 'wb') as f:
+                f.write(response.content)
+            
             downloaded_files.append(output_path)
+        except requests.exceptions.RequestException:
+            pass
     
     return downloaded_files
 
