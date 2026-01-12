@@ -3,13 +3,13 @@ import os
 import tempfile
 import requests
 from unittest.mock import patch, MagicMock
-from ingest import download_multiple_csvs
+from src.ingest import download_multiple_csvs
 
 
 class TestDownloadMultipleCsvs:
     """Test cases for download_multiple_csvs function."""
     
-    @patch('ingest.requests.get')
+    @patch('src.ingest.requests.get')
     def test_download_multiple_csvs_success(self, mock_get):
         """Test downloading multiple CSV files successfully."""
         mock_response = MagicMock()
@@ -29,7 +29,7 @@ class TestDownloadMultipleCsvs:
             assert mock_get.call_count == 2
             assert all(os.path.exists(f) for f in downloaded)
     
-    @patch('ingest.requests.get')
+    @patch('src.ingest.requests.get')
     def test_download_multiple_csvs_partial_failure(self, mock_get):
         """Test downloading multiple CSV files with some failures."""
         mock_response = MagicMock()
@@ -63,7 +63,7 @@ class TestDownloadMultipleCsvs:
             assert len(downloaded) == 2
             assert mock_get.call_count == 4
     
-    @patch('ingest.requests.get')
+    @patch('src.ingest.requests.get')
     def test_download_multiple_csvs_generates_filename(self, mock_get):
         """Test that non-CSV URLs get generated filenames."""
         mock_response = MagicMock()
