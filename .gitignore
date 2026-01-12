@@ -214,3 +214,25 @@ __marimo__/
 .coverage.*
 coverage.xml
 htmlcov/
+# --- SPECIFIQUE PROJET DATA ---
+
+# Ignorer tous les fichiers de données volumineux
+*.csv
+*.parquet
+*.json
+*.xlsx
+*.xls
+
+# Ignorer les bases de données locales (générées par le script)
+*.db
+*.sqlite
+*.sqlite3
+
+# Ignorer tout le dossier de données (pour être sûr)
+data/
+
+# Ignorer le dossier de références s'il contient des documents lourds
+references/
+
+# ... Mais garder les fichiers .gitkeep (pour conserver la structure des dossiers)
+!**/.gitkeep
