@@ -1,6 +1,7 @@
 import pytest
 import os
 import tempfile
+import requests
 from unittest.mock import patch, MagicMock
 from ingest import download_multiple_csvs
 
@@ -35,11 +36,17 @@ class TestDownloadMultipleCsvs:
         mock_response.content = b"col1,col2\nval1,val2"
         mock_response.raise_for_status = MagicMock()
         
+        call_results = [mock_response, requests.exceptions.RequestException("Network error"), 
+                       mock_response, requests.exceptions.RequestException("Network error")]
+        call_index = [0]
+        
         def side_effect(*args, **kwargs):
-            if mock_get.call_count == 0 or mock_get.call_count == 2:
-                return mock_response
-            else:
-                raise Exception("Network error")
+            idx = call_index[0]
+            call_index[0] += 1
+            result = call_results[idx]
+            if isinstance(result, Exception):
+                raise result
+            return result
         
         mock_get.side_effect = side_effect
         
