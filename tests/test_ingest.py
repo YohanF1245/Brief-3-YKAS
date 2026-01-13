@@ -1,85 +1,50 @@
 import pytest
-import os
 import tempfile
 import requests
 from unittest.mock import patch, MagicMock
-from src.ingest import download_multiple_csvs
+from pathlib import Path
 
+# On importe la bonne fonction depuis le fichier src/ingest.py
+from src.ingest import download_file
 
-class TestDownloadMultipleCsvs:
-    """Test cases for download_multiple_csvs function."""
-    
+class TestIngest:
+    """Test cases for the ingest module."""
+
     @patch('src.ingest.requests.get')
-    def test_download_multiple_csvs_success(self, mock_get):
-        """Test downloading multiple CSV files successfully."""
+    def test_download_file_success(self, mock_get):
+        """Teste le téléchargement réussi d'un fichier unique."""
+        # 1. Préparer la fausse réponse (Mock)
         mock_response = MagicMock()
-        mock_response.content = b"col1,col2\nval1,val2"
-        mock_response.raise_for_status = MagicMock()
+        mock_response.status_code = 200
+        mock_response.iter_content = MagicMock(return_value=[b"data1", b"data2"])
         mock_get.return_value = mock_response
-        
-        urls = [
-            "https://example.com/data1.csv",
-            "https://example.com/data2.csv",
-        ]
-        
-        with tempfile.TemporaryDirectory() as tmpdir:
-            downloaded = download_multiple_csvs(urls, output_dir=tmpdir)
-            
-            assert len(downloaded) == 2
-            assert mock_get.call_count == 2
-            assert all(os.path.exists(f) for f in downloaded)
-    
-    @patch('src.ingest.requests.get')
-    def test_download_multiple_csvs_partial_failure(self, mock_get):
-        """Test downloading multiple CSV files with some failures."""
-        mock_response = MagicMock()
-        mock_response.content = b"col1,col2\nval1,val2"
-        mock_response.raise_for_status = MagicMock()
-        
-        call_results = [mock_response, requests.exceptions.RequestException("Network error"), 
-                       mock_response, requests.exceptions.RequestException("Network error")]
-        call_index = [0]
-        
-        def side_effect(*args, **kwargs):
-            idx = call_index[0]
-            call_index[0] += 1
-            result = call_results[idx]
-            if isinstance(result, Exception):
-                raise result
-            return result
-        
-        mock_get.side_effect = side_effect
-        
-        urls = [
-            "https://example.com/data1.csv",
-            "https://example.com/data2.csv",
-            "https://example.com/data3.csv",
-            "https://example.com/data4.csv",
-        ]
-        
-        with tempfile.TemporaryDirectory() as tmpdir:
-            downloaded = download_multiple_csvs(urls, output_dir=tmpdir)
-            
-            assert len(downloaded) == 2
-            assert mock_get.call_count == 4
-    
-    @patch('src.ingest.requests.get')
-    def test_download_multiple_csvs_generates_filename(self, mock_get):
-        """Test that non-CSV URLs get generated filenames."""
-        mock_response = MagicMock()
-        mock_response.content = b"col1,col2\nval1,val2"
-        mock_response.raise_for_status = MagicMock()
-        mock_get.return_value = mock_response
-        
-        urls = [
-            "https://example.com/data1",
-            "https://example.com/data2.json",
-        ]
-        
-        with tempfile.TemporaryDirectory() as tmpdir:
-            downloaded = download_multiple_csvs(urls, output_dir=tmpdir)
-            
-            assert len(downloaded) == 2
-            assert "data_1.csv" in downloaded[0]
-            assert "data_2.csv" in downloaded[1]
 
+        # 2. Utiliser un dossier temporaire
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp_path = Path(tmpdir)
+            filename = "test.csv"
+            
+            # Appel de la fonction à tester
+            result = download_file("http://fake.url", tmp_path, filename)
+
+            # 3. Vérifications
+            assert result == tmp_path / filename
+            assert result.exists()
+            assert result.read_bytes() == b"data1data2"
+            assert mock_get.call_count == 1
+
+    @patch('src.ingest.requests.get')
+    def test_download_file_failure(self, mock_get):
+        """Teste la gestion d'une erreur (ex: 404)."""
+        # On simule une erreur HTTP
+        mock_get.side_effect = requests.exceptions.HTTPError("404 Not Found")
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp_path = Path(tmpdir)
+            
+            # Appel de la fonction
+            result = download_file("http://fake.url/missing", tmp_path, "missing.csv")
+
+            # La fonction doit retourner None et ne pas planter
+            assert result is None
+            assert len(list(tmp_path.iterdir())) == 0  # Dossier vide
